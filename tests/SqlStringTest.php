@@ -86,4 +86,9 @@ SQL;
             StringHelper::trimSql($actualSql)
         );
     }
+
+    public function testCaseDivided(): void
+    {
+        $this->assertEquals('OneTwoThree', StringHelper::caseDivided('one_two_three'));
+    }
 }

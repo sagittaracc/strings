@@ -25,4 +25,14 @@ class StringHelper
         $sql = self::trimSpacesAfterBraces($sql);
         return self::trimSpacesBeforeBraces($sql);
     }
+
+    public static function caseDivided($s)
+    {
+        return implode('', array_map(
+            function($part) {
+                return ucfirst($part);
+            },
+            explode('_', $s)
+        ));
+    }
 }
