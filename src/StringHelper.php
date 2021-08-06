@@ -25,14 +25,32 @@ class StringHelper
         $sql = self::trimSpacesAfterBraces($sql);
         return self::trimSpacesBeforeBraces($sql);
     }
-
+    /**
+     * TODO: Выпилить (неверно названа)
+     */
     public static function caseDivided($s)
     {
         return implode('', array_map(
-            function($part) {
+            function ($part) {
                 return ucfirst($part);
             },
             explode('_', $s)
+        ));
+    }
+
+    public static function camel2id($name)
+    {
+        $regex = '/(?<!\p{Lu})\p{Lu}/u';
+        return strtolower(trim(preg_replace($regex, '_\0', $name), '_'));
+    }
+
+    public static function id2camel($id)
+    {
+        return implode('', array_map(
+            function ($part) {
+                return ucfirst($part);
+            },
+            explode('_', $id)
         ));
     }
 }

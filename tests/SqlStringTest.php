@@ -91,4 +91,10 @@ SQL;
     {
         $this->assertEquals('OneTwoThree', StringHelper::caseDivided('one_two_three'));
     }
+
+    public function testInflector(): void
+    {
+        $this->assertEquals('one_two_three', StringHelper::camel2id('OneTwoThree'));
+        $this->assertEquals('OneTwoThree', StringHelper::id2camel('one_two_three'));
+    }
 }
