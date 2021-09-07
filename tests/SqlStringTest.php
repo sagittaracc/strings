@@ -139,11 +139,6 @@ SQL;
         );
     }
 
-    public function testCaseDivided(): void
-    {
-        $this->assertEquals('OneTwoThree', StringHelper::caseDivided('one_two_three'));
-    }
-
     public function testInflector(): void
     {
         $this->assertEquals('one_two_three', StringHelper::camel2id('OneTwoThree'));
