@@ -13,37 +13,40 @@ class StringHelper
         '<' => '>',
     ];
 
-    public static function getOpenBraceList()
+    public static function getOpeningBraces()
     {
         return array_keys(self::$braces);
     }
 
-    public static function getCloseBraceList()
+    public static function getClosingBraces()
     {
         return array_values(self::$braces);
     }
 
-    public static function getCloseBraceFor($brace)
+    public static function getClosingBracePair($brace)
     {
-        if (!in_array($brace, self::getOpenBraceList())) {
+        if (!in_array($brace, self::getOpeningBraces())) {
             throw new Exception("$brace isn't an open brace", 400);
         }
 
         return self::$braces[$brace];
     }
 
-    public static function getCloseBraceInStringFor($brace, $s, $pos)
+    public static function getClosingBracePos($s, $pos)
     {
-        if (mb_substr($s, $pos, 1) !== $brace) {
-            throw new Exception("There is no $brace at $pos", 401);
+        $brace = mb_substr($s, $pos, 1);
+
+        if (!in_array($brace, self::getOpeningBraces())) {
+            throw new Exception("$brace isn't a brace", 401);
         }
 
+        $closingBrace = self::getClosingBracePair($brace);
         $stack = [];
 
         for ($i = $pos + 1; $i < mb_strlen($s); $i++) {
             $c = mb_substr($s, $i, 1);
 
-            if ($c === self::getCloseBraceFor($brace)) {
+            if ($c === $closingBrace) {
                 if (empty($stack)) {
                     return $i;
                 }
@@ -59,9 +62,12 @@ class StringHelper
         return null;
     }
 
-    public static function getBodyInsideBraces($brace, $s, $startPos)
+    public static function getBodyInsideBraces($s, $pos)
     {
-        $body = mb_substr($s, $startPos + 1, self::getCloseBraceInStringFor($brace, $s, $startPos) - $startPos - 1);
+        $startPos = $pos;
+        $endPos = self::getClosingBracePos($s, $pos);
+
+        $body = mb_substr($s, $startPos + 1, $endPos - $startPos - 1);
 
         return rtrim(ltrim($body, "\n\r"), " \t\n\r");
     }

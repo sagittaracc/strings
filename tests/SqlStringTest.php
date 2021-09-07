@@ -9,16 +9,16 @@ final class SqlStringTest extends TestCase
 {
     public function testBraces(): void
     {
-        $this->assertEquals(['[', '{', '(', '<'], StringHelper::getOpenBraceList());
-        $this->assertEquals([']', '}', ')', '>'], StringHelper::getCloseBraceList());
+        $this->assertEquals(['[', '{', '(', '<'], StringHelper::getOpeningBraces());
+        $this->assertEquals([']', '}', ')', '>'], StringHelper::getClosingBraces());
 
-        $this->assertEquals(']', StringHelper::getCloseBraceFor('['));
-        $this->assertEquals('}', StringHelper::getCloseBraceFor('{'));
-        $this->assertEquals(')', StringHelper::getCloseBraceFor('('));
-        $this->assertEquals('>', StringHelper::getCloseBraceFor('<'));
+        $this->assertEquals(']', StringHelper::getClosingBracePair('['));
+        $this->assertEquals('}', StringHelper::getClosingBracePair('{'));
+        $this->assertEquals(')', StringHelper::getClosingBracePair('('));
+        $this->assertEquals('>', StringHelper::getClosingBracePair('<'));
 
         $this->expectExceptionCode(400);
-        StringHelper::getCloseBraceFor('!');
+        StringHelper::getClosingBracePair('!');
     }
 
     public function testBodyInsideBraces(): void
@@ -54,9 +54,9 @@ STRING;
 
         $body2 = '';
 
-        $this->assertEquals($body,  StringHelper::getBodyInsideBraces('(', $s, 12));
-        $this->assertEquals($body1, StringHelper::getBodyInsideBraces('(', $s, 71));
-        $this->assertEquals($body2, StringHelper::getBodyInsideBraces('(', $s, 108));
+        $this->assertEquals($body,  StringHelper::getBodyInsideBraces($s, 12));
+        $this->assertEquals($body1, StringHelper::getBodyInsideBraces($s, 71));
+        $this->assertEquals($body2, StringHelper::getBodyInsideBraces($s, 108));
     }
 
     public function testStripSpacesAfterBraces(): void
