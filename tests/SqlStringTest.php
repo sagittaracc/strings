@@ -7,6 +7,58 @@ use sagittaracc\StringHelper;
 
 final class SqlStringTest extends TestCase
 {
+    public function testBraces(): void
+    {
+        $this->assertEquals(['[', '{', '(', '<'], StringHelper::getOpenBraceList());
+        $this->assertEquals([']', '}', ')', '>'], StringHelper::getCloseBraceList());
+
+        $this->assertEquals(']', StringHelper::getCloseBraceFor('['));
+        $this->assertEquals('}', StringHelper::getCloseBraceFor('{'));
+        $this->assertEquals(')', StringHelper::getCloseBraceFor('('));
+        $this->assertEquals('>', StringHelper::getCloseBraceFor('<'));
+
+        $this->expectExceptionCode(400);
+        StringHelper::getCloseBraceFor('!');
+    }
+
+    public function testBodyInsideBraces(): void
+    {
+        $s = <<<STRING
+            (
+                какой - то текст здесь
+                (
+                    some text here()()
+                    ()(
+                        text text
+                    )
+                )
+            )
+STRING;
+
+        $body = <<<STRING
+                какой - то текст здесь
+                (
+                    some text here()()
+                    ()(
+                        text text
+                    )
+                )
+STRING;
+
+        $body1 = <<<STRING
+                    some text here()()
+                    ()(
+                        text text
+                    )
+STRING;
+
+        $body2 = '';
+
+        $this->assertEquals($body,  StringHelper::getBodyInsideBraces('(', $s, 12));
+        $this->assertEquals($body1, StringHelper::getBodyInsideBraces('(', $s, 71));
+        $this->assertEquals($body2, StringHelper::getBodyInsideBraces('(', $s, 108));
+    }
+
     public function testStripSpacesAfterBraces(): void
     {
         $this->assertEquals('(', StringHelper::trimSpacesAfterBraces('(  '));
